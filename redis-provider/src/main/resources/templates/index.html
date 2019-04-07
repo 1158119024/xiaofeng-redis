@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>第一个HTML页面</title>
+
+    <script src="../static/js/RongIMLib-2.4.0.min.js"></script>
+    <script src="../static/js/RongEmoji-2.2.6.min.js"></script>
+</head>
+<body>
+<h1>Hello Spring Boot!!!</h1>
+<p th:text="${hello}"></p>
+
+<script>
+    /*
+    具体使用时：
+    1：切换到自己的 key 和 token
+    2：移除 im.js 里的 sendTextMessage(instance); 这行代码
+    3：自行二次开发
+    4：参考
+        - 用户数据处理 http://support.rongcloud.cn/kb/NjQ5
+        - 消息状态 http://support.rongcloud.cn/kb/NjMz
+        - 集成指南 https://rongcloud.github.io/websdk-demo/integrate/guide.html
+        - 其他 demo https://github.com/rongcloud/websdk-demo
+    */
+    const appKey = "8luwapkv8jotl";
+    const token = "V1wy91cdpIYxt+nKw8P1slBlkl/cjK3X3rYFCJNS/kdHtrnjKIwGN2HfWkUeFIaVBVaW1WKpLFA=";
+    const RongIMClient = RongIMLib.RongIMClient;
+    init();
+    function init(){
+        // RongIMLib.RongIMClient.init(appKey, null, token);
+        RongIMLib.RongIMClient.init(appKey);
+
+        // 连接状态监听器
+        RongIMClient.setConnectionStatusListener({
+            onChanged: function (status) {
+                // status 标识当前连接状态
+                switch (status) {
+                    case RongIMLib.ConnectionStatus.CONNECTED:
+                        console.log('链接成功');
+                        break;
+                    case RongIMLib.ConnectionStatus.CONNECTING:
+                        console.log('正在链接');
+                        break;
+                    case RongIMLib.ConnectionStatus.DISCONNECTED:
+                        console.log('断开连接');
+                        break;
+                    case RongIMLib.ConnectionStatus.KICKED_OFFLINE_BY_OTHER_CLIENT:
+                        console.log('其他设备登录');
+                        break;
+                    case RongIMLib.ConnectionStatus.DOMAIN_INCORRECT:
+                        console.log('域名不正确');
+                        break;
+                    case RongIMLib.ConnectionStatus.NETWORK_UNAVAILABLE:
+                        console.log('网络不可用');
+                        break;
+                }
+            }
+        });
+
+        // 消息监听器
+        RongIMClient.setOnReceiveMessageListener({
+            // 接收到的消息
+            onReceived: function (message) {
+                console.log(message.messageType);
+                // 判断消息类型
+                switch(message.messageType){
+                    case RongIMClient.MessageType.TextMessage:
+                        // message.content.content => 文字内容
+                        break;
+                    case RongIMClient.MessageType.VoiceMessage:
+                        // message.content.content => 格式为 AMR 的音频 base64
+                        break;
+                    case RongIMClient.MessageType.ImageMessage:
+                        // message.content.content => 图片缩略图 base64
+                        // message.content.imageUri => 原图 URL
+                        break;
+                    case RongIMClient.MessageType.LocationMessage:
+                        // message.content.latiude => 纬度
+                        // message.content.longitude => 经度
+                        // message.content.content => 位置图片 base64
+                        break;
+                    case RongIMClient.MessageType.RichContentMessage:
+                        // message.content.content => 文本消息内容
+                        // message.content.imageUri => 图片 base64
+                        // message.content.url => 原图 URL
+                        break;
+                    case RongIMClient.MessageType.InformationNotificationMessage:
+                        // do something
+                        break;
+                    case RongIMClient.MessageType.ContactNotificationMessage:
+                        // do something
+                        break;
+                    case RongIMClient.MessageType.ProfileNotificationMessage:
+                        // do something
+                        break;
+                    case RongIMClient.MessageType.CommandNotificationMessage:
+                        // do something
+                        break;
+                    case RongIMClient.MessageType.CommandMessage:
+                        // do something
+                        break;
+                    case RongIMClient.MessageType.UnknownMessage:
+                        // do something
+                        break;
+                    default:
+                    // do something
+                }
+                console.log(message.content.content);
+            }
+        });
+
+        RongIMClient.connect(token, {
+            onSuccess: function(userId) {
+                console.log('Connect successfully. ' + userId);
+            },
+            onTokenIncorrect: function() {
+                console.log('token 无效');
+            },
+            onError: function(errorCode){
+                var info = '';
+                switch (errorCode) {
+                    case RongIMLib.ErrorCode.TIMEOUT:
+                        info = '超时';
+                        break;
+                    case RongIMLib.ConnectionState.UNACCEPTABLE_PAROTOCOL_VERSION:
+                        info = '不可接受的协议版本';
+                        break;
+                    case RongIMLib.ConnectionState.IDENTIFIER_REJECTED:
+                        info = 'appkey不正确';
+                        break;
+                    case RongIMLib.ConnectionState.SERVER_UNAVAILABLE:
+                        info = '服务器不可用';
+                        break;
+                }
+                console.log(info);
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

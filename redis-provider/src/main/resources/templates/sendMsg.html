@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>发送融云消息</title>
+
+</head>
+<body>
+<form action="/provider/sendRYMessage">
+    发送人id:<input type="text" name="id" value=""/>
+    <br/>
+    目标id:<input type="text" name="toUserId" value="">
+    <br/>
+    发送内容:<input type="text" name="content" value="">
+    <br/>
+    <select name="type" id="type">
+        <option value="RC:TxtMsg">RC:TxtMsg</option>
+    </select>
+    <br/>
+    <input type="submit" value="提交">
+</form>
+</body>
+</html>
